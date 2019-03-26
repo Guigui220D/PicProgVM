@@ -2,6 +2,8 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "PicProgVirtualMachine.h"
+
 static const char* YOU_CAN_GET_HELP = "You can get help using \"-?\" or \"--help\".";
 
 void print_help()
@@ -95,6 +97,37 @@ int main(int argc, char *argv[])
             return 1;
         }
     }
-    std::cout << "Graphic mode " << (graphic_mode ? "enabled" : "disabled") << "\n";
+
+
+
+    PPVM ppvm(img_path, graphic_mode);
+
+    auto init_code = ppvm.initialize();
+
+    if (init_code)
+    {
+        std::cerr << "The PPVM could not be initialized.\n - ";
+        switch (init_code)
+        {
+        case InitCodes::WrongImageFilePath:
+            std::cerr << "The image file could not be found." << std::endl;
+            break;
+        case InitCodes::FileIsJPEG:
+            std::cerr << "The image file is a JPEG, it is not suitable for the PPVM.\n"
+            << "Please use bitmap or PNG files." << std::endl;
+        default:
+            std::cerr << std::endl;
+            break;
+        }
+        return 1;
+    }
+    else
+    {
+
+    }
+
+
+
+
     return 0;
 }
