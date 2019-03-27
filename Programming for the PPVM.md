@@ -19,6 +19,7 @@ The pixels can also not be instructions but pure data, such as arguments. The pi
 
 ### How is an instruction read ?
 
+The pointer starts at position 0,0, and with direction 0 (right)
 An instruction is defined by the first byte of the pixel that the program pointer is on, so by the Red component of that pixel.
 The two others bytes are used for arguments. They are either the arguments themselves if they fit, or a 2D pointer to the arguments.
 The Alpha byte (4th byte) is never used.
