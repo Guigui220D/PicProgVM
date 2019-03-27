@@ -16,3 +16,6 @@ bld/
 
 # Removing dlls
 *.dll
+
+
+source/test.png
