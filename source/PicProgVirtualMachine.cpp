@@ -29,6 +29,8 @@ InitCodes::InitCodes PPVM::initialize()
 
 void PPVM::run()
 {
+    bool finished = false;
+
     unsigned int program_pointer_x = 0, program_pointer_y = 0;
     unsigned int& ppx = program_pointer_x;
     unsigned int& ppy = program_pointer_y;
@@ -45,9 +47,14 @@ void PPVM::run()
         switch (col.r)
         {
         case 0: break; //Break
+        case 1: //Terminate program
+            finished = true;
+            break;
         default:
             printf("Unknown instruction : %i (at %u, %u)\n", col.r, ppx, ppy);
         }
+        if (finished)
+            break;
         //Move program pointer
         switch (direction & 0b11)
         {

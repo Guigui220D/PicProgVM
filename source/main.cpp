@@ -126,6 +126,7 @@ int main(int argc, char *argv[])
         ppvm.run();
     }
 
+    std::cout << "Program terminated\n";
 
 
 
