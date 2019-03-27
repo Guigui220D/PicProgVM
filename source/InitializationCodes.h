@@ -6,6 +6,7 @@ namespace InitCodes
     {
         Success,
         WrongImageFilePath,
+        ImageTooLarge,
         FileIsJPEG
     };
 }
