@@ -35,7 +35,8 @@ You can technically use any format of image supported by the SFML, as it will lo
 
 0 : Nop
 1 : Terminate program
-2 : Jump
-3 : Change pointer direction
+// 2 : Jump
+// 3 : Change pointer direction
+4 : Print string
 
 

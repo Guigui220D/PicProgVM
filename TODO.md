@@ -11,3 +11,4 @@
 - [x] 1 : Terminate program
 - [ ] 2 : Jump
 - [ ] 3 : Change pointer direction
+- [x] 4 : Print string

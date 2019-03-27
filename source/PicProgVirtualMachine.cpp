@@ -20,7 +20,7 @@ InitCodes::InitCodes PPVM::initialize()
     {
         size_x = code_pic.getSize().x;
         size_y = code_pic.getSize().y;
-        if (size_x > 4096 || size_y > 4096)
+        if (size_x > 255 || size_y > 255)
             return InitCodes::ImageTooLarge;
         return InitCodes::Success;
     }
@@ -49,6 +49,61 @@ void PPVM::run()
         case 0: break; //Break
         case 1: //Terminate program
             finished = true;
+            break;
+        case 4:
+            {
+                auto keep_x = ppx, keep_y = ppy;
+
+                ppx += (char)(col.g);
+                ppy += (char)(col.b);
+                while (true)
+                {
+                    sf::Color arg_col = code_pic.getPixel(ppx, ppy);
+
+                    if (arg_col.r)
+                    {
+                        printf("%c", arg_col.r);
+                    }
+                    else break;
+                    if (arg_col.g)
+                    {
+                        printf("%c", arg_col.g);
+                    }
+                    else break;
+                    if (arg_col.b)
+                    {
+                        printf("%c", arg_col.b);
+                    }
+                    else break;
+
+                    switch (direction & 0b11)
+                    {
+                    case 0b00: //Right
+                        ppx++;
+                        if (ppx >= size_x)
+                            ppx = 0;
+                        break;
+                    case 0b01: //Down
+                        ppy++;
+                        if (ppy >= size_y)
+                            ppy = 0;
+                        break;
+                    case 0b10: //Left
+                        ppx--;
+                        if (ppx >= size_x)
+                            ppx = size_x - 1;
+                        break;
+                    case 0b11: //Up
+                        ppy--;
+                        if (ppy >= size_y)
+                            ppy = size_y - 1;
+                        break;
+                    }
+                }
+
+                ppx = keep_x;
+                ppy = keep_y;
+            }
             break;
         default:
             printf("Unknown instruction : %i (at %u, %u)\n", col.r, ppx, ppy);
