@@ -2,6 +2,8 @@
 
 #include <SFML/Graphics.hpp>
 
+#include <iostream>
+
 #include "InitializationCodes.h"
 
 class PPVM
@@ -23,4 +25,9 @@ class PPVM
         bool m_graphic_mode;
 
         unsigned int size_x, size_y;
+
+        unsigned int program_pointer_x, program_pointer_y;
+        char program_pointer_direction;
+
+        //std::String getStringArg(unsigned int& ppx, unsigned int& ppy, char direction);
 };

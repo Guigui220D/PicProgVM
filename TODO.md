@@ -12,3 +12,7 @@
 - [ ] 2 : Jump
 - [ ] 3 : Change pointer direction
 - [x] 4 : Print string
+
+### Details : 
+
+- Make sure arguments are inside the image

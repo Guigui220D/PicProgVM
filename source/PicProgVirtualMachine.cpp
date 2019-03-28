@@ -22,6 +22,9 @@ InitCodes::InitCodes PPVM::initialize()
         size_y = code_pic.getSize().y;
         if (size_x > 255 || size_y > 255)
             return InitCodes::ImageTooLarge;
+        program_pointer_x = 0;
+        program_pointer_y = 0;
+        program_pointer_direction = 0;
         return InitCodes::Success;
     }
     else return InitCodes::WrongImageFilePath;
@@ -31,10 +34,9 @@ void PPVM::run()
 {
     bool finished = false;
 
-    unsigned int program_pointer_x = 0, program_pointer_y = 0;
     unsigned int& ppx = program_pointer_x;
     unsigned int& ppy = program_pointer_y;
-    char direction = 0;
+    char& dir = program_pointer_direction;
     //Right : 00b
     //Down : 01b
     //Left : 10b
@@ -56,6 +58,7 @@ void PPVM::run()
 
                 ppx += (char)(col.g);
                 ppy += (char)(col.b);
+
                 while (true)
                 {
                     sf::Color arg_col = code_pic.getPixel(ppx, ppy);
@@ -76,7 +79,7 @@ void PPVM::run()
                     }
                     else break;
 
-                    switch (direction & 0b11)
+                    switch (dir & 0b11)
                     {
                     case 0b00: //Right
                         ppx++;
@@ -111,7 +114,7 @@ void PPVM::run()
         if (finished)
             break;
         //Move program pointer
-        switch (direction & 0b11)
+        switch (dir & 0b11)
         {
         case 0b00: //Right
             ppx++;
@@ -136,3 +139,5 @@ void PPVM::run()
         }
     }
 }
+
+//std::String PPVM::getStringArg(unsigned int& ppx, unsigned int& ppy, char direction)
