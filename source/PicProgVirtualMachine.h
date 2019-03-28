@@ -3,6 +3,7 @@
 #include <SFML/Graphics.hpp>
 
 #include <iostream>
+#include <string>
 
 #include "InitializationCodes.h"
 
@@ -29,5 +30,5 @@ class PPVM
         unsigned int program_pointer_x, program_pointer_y;
         char program_pointer_direction;
 
-        //std::String getStringArg(unsigned int& ppx, unsigned int& ppy, char direction);
+        std::string getStringArg();
 };
