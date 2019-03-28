@@ -6,11 +6,12 @@
 #include <string>
 
 #include "InitializationCodes.h"
+#include "ProgramPointer.h"
 
 class PPVM
 {
     public:
-        static PPVM* currentPPVM;
+        inline static PPVM* const getCurrentPPVM() { return currentPPVM; }
 
         PPVM(char* image_path, bool graphic_mode);
         ~PPVM();
@@ -19,18 +20,20 @@ class PPVM
 
         void run();
 
+        inline unsigned int getSizeX() const { return m_size_x; }
+        inline unsigned int getSizeY() const { return m_size_y; }
+
     private:
+        static PPVM* currentPPVM;
+
         sf::Image code_pic;
 
         char* m_image_path;
         bool m_graphic_mode;
 
-        unsigned int size_x, size_y;
+        unsigned int m_size_x, m_size_y;
 
-        unsigned int program_pointer_x, program_pointer_y;
-        char program_pointer_direction;
-
-        void stepProgramPointer();
+        ProgramPointer m_program_pointer;
 
         std::string getStringArg();
 };

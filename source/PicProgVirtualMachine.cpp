@@ -6,7 +6,8 @@ PPVM* PPVM::currentPPVM;
 
 PPVM::PPVM(char* image_path, bool graphic_mode) :
     m_image_path(image_path),
-    m_graphic_mode(graphic_mode)
+    m_graphic_mode(graphic_mode),
+    m_program_pointer(0, 0, 0)
 {
     currentPPVM = this;
 }
@@ -18,13 +19,11 @@ InitCodes::InitCodes PPVM::initialize()
     //Try to open file
     if (code_pic.loadFromFile(m_image_path))
     {
-        size_x = code_pic.getSize().x;
-        size_y = code_pic.getSize().y;
-        if (size_x > 255 || size_y > 255)
+        m_size_x = code_pic.getSize().x;
+        m_size_y = code_pic.getSize().y;
+        if (m_size_x > 255 || m_size_y > 255)
             return InitCodes::ImageTooLarge;
-        program_pointer_x = 0;
-        program_pointer_y = 0;
-        program_pointer_direction = 0;
+        m_program_pointer.init();
         return InitCodes::Success;
     }
     else return InitCodes::WrongImageFilePath;
@@ -33,10 +32,6 @@ InitCodes::InitCodes PPVM::initialize()
 void PPVM::run()
 {
     bool finished = false;
-
-    unsigned int& ppx = program_pointer_x;
-    unsigned int& ppy = program_pointer_y;
-    char& dir = program_pointer_direction;
     //Right : 00b
     //Down : 01b
     //Left : 10b
@@ -44,7 +39,7 @@ void PPVM::run()
     while (true)
     {
         //Get current pixel
-        sf::Color col = code_pic.getPixel(ppx, ppy);
+        sf::Color col = code_pic.getPixel(m_program_pointer.getX(), m_program_pointer.getY());
         //Do op
         switch (col.r)
         {
@@ -54,51 +49,22 @@ void PPVM::run()
             break;
         case 4:
             {
-                auto keep_x = ppx, keep_y = ppy;
+                ProgramPointer keep = m_program_pointer;
 
-                ppx += (char)(col.g);
-                ppy += (char)(col.b);
+                m_program_pointer = ProgramPointer(m_program_pointer, col.g, col.b);
 
                 std::cout << getStringArg();
 
-                ppx = keep_x;
-                ppy = keep_y;
+                m_program_pointer = keep;
             }
             break;
         default:
-            printf("Unknown instruction : %i (at %u, %u)\n", col.r, ppx, ppy);
+            printf("Unknown instruction : %i (at %u, %u)\n", col.r, m_program_pointer.getX(), m_program_pointer.getY());
         }
         if (finished)
             break;
         //Move program pointer
-        stepProgramPointer();
-    }
-}
-
-void PPVM::stepProgramPointer()
-{
-    switch (program_pointer_direction & 0b11)
-    {
-    case 0b00: //Right
-        program_pointer_x++;
-        if (program_pointer_x >= size_x)
-            program_pointer_x = 0;
-        break;
-    case 0b01: //Down
-        program_pointer_y++;
-        if (program_pointer_y >= size_y)
-            program_pointer_y = 0;
-        break;
-    case 0b10: //Left
-        program_pointer_x--;
-        if (program_pointer_x >= size_x)
-            program_pointer_x = size_x - 1;
-        break;
-    case 0b11: //Up
-        program_pointer_y--;
-        if (program_pointer_y >= size_y)
-            program_pointer_y = size_y - 1;
-        break;
+        m_program_pointer.step();
     }
 }
 
@@ -108,7 +74,7 @@ std::string PPVM::getStringArg()
 
     while (true)
     {
-        sf::Color arg_col = code_pic.getPixel(program_pointer_x, program_pointer_y);
+        sf::Color arg_col = code_pic.getPixel(m_program_pointer.getX(), m_program_pointer.getY());
 
         if (arg_col.r)
             ret += (char)arg_col.r;
@@ -120,7 +86,7 @@ std::string PPVM::getStringArg()
             ret += (char)arg_col.b;
         else break;
 
-        stepProgramPointer();
+        m_program_pointer.step();
     }
 
     return ret;
