@@ -30,5 +30,7 @@ class PPVM
         unsigned int program_pointer_x, program_pointer_y;
         char program_pointer_direction;
 
+        void stepProgramPointer();
+
         std::string getStringArg();
 };

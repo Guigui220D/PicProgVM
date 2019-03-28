@@ -100,10 +100,10 @@ int main(int argc, char *argv[])
 
 
 
+    //Create the ppvm and init it
     PPVM ppvm(img_path, graphic_mode);
-
     auto init_code = ppvm.initialize();
-
+    //Check the init code
     if (init_code)
     {
         std::cerr << "The PPVM could not be initialized.\n - ";
@@ -123,6 +123,7 @@ int main(int argc, char *argv[])
     }
     else
     {
+        //Run the ppvm is initialization was a success
         ppvm.run();
     }
 
